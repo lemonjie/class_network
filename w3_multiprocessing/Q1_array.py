@@ -41,6 +41,7 @@ if __name__ == '__main__':
     print(final_list[:])
 
 '''
+#use loop
 from multiprocessing import Array
 import multiprocessing.process
 
