@@ -4,7 +4,7 @@ from urllib.parse import parse_qs
 
 hostName = 'localhost'
 serverPort = 8080
-class S(BaseHTTPRequestHandler):
+class B(BaseHTTPRequestHandler):
     def _send_respheader(self):
         self.send_response(200)
         self.send_header('Content-type', 'text/html')
@@ -17,8 +17,10 @@ class S(BaseHTTPRequestHandler):
         if 'name' in query_components:
             name = query_components['name'][0]
 
-        html = '<html><head><title>https://iAIClab.tku.edu.tw</title></head>'
-        html += '<body><h1>This web page is the result of HTTP GET message.</h1>'
+        f_index = open('index.html', 'r')
+        html_ori = f_index.read()
+        html_split = html_ori.split('</body>', 1)
+        html = html_split[0]
         html += '<h2>Hello ' + str(name) + ' !</h2></body></html>'
         self.wfile.write(bytes(html, 'utf-8'))
 
@@ -30,7 +32,10 @@ class S(BaseHTTPRequestHandler):
         self._send_respheader()
         self.wfile.write('POST request for {}'.format(self.path).encode('utf-8'))
 
-def main(server_class=HTTPServer, handler_class=S):
+    def do_HEAD(self):
+        self._send_respheader()
+
+def main(server_class=HTTPServer, handler_class=B): #handler_class=SimpleHTTPRequestHandler):
     print('Starting httpd server..%s:%d\n' % (hostName, serverPort))
     server_address = ('', serverPort)
     httpd = server_class(server_address, handler_class)

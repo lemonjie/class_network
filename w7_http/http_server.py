@@ -1,8 +1,9 @@
 from http.server import BaseHTTPRequestHandler, HTTPServer
+from http.server import SimpleHTTPRequestHandler
 
 hostName = 'localhost'
 serverPort = 8080
-class S(BaseHTTPRequestHandler):
+class B(BaseHTTPRequestHandler):
     def _send_respheader(self):
         self.send_response(200)
         self.send_header('Content-type', 'text/html')
@@ -10,11 +11,16 @@ class S(BaseHTTPRequestHandler):
 
     def do_GET(self):
         self._send_respheader()
+        f_index = open('index.html', 'r')
+        html = f_index.read()
+        self.wfile.write(bytes(html, 'utf-8'))
+        '''
         self.wfile.write(bytes('<html><head><title>https://iAIClab.tku.edu.tw</title></head>', 'utf-8'))
         self.wfile.write(bytes('<p>Request: %s</p>' % self.path, 'utf-8'))
         self.wfile.write(bytes('<body>', 'utf-8'))
         self.wfile.write(bytes('<p>This web page is the result of HTTP get message.</p>', 'utf-8'))
         self.wfile.write(bytes('</body></html>', 'utf-8'))
+        '''
 
     def do_POST(self):
         content_length = int(self.headers['Content-Length'])
@@ -23,8 +29,11 @@ class S(BaseHTTPRequestHandler):
                 str(self.path), str(self.headers), post_data.decode('utf-8'))
         self._send_respheader()
         self.wfile.write('POST request for {}'.format(self.path).encode('utf-8'))
+    
+    def do_HEAD(self):
+        self._send_respheader()
 
-def main(server_class=HTTPServer, handler_class=S):
+def main(server_class=HTTPServer, handler_class=B): #handler_class=SimpleHTTPRequestHandler):
     print('Starting httpd server..%s:%d\n' % (hostName, serverPort))
     server_address = ('', serverPort)
     httpd = server_class(server_address, handler_class)
