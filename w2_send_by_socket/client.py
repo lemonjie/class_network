@@ -22,7 +22,6 @@ msg_bytes = msg_string.encode('utf-8') #calculate md5 should use bytes in python
 m.update(msg_bytes)
 msg_md5 = m.hexdigest()
 
-
 #test how many time does ACK cost
 time_start = time.time()
 soc.send('ACK'.encode('utf-8'))
